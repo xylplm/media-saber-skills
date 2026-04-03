@@ -1,4 +1,4 @@
-name: Publish To ClawHub
+name: 发布技能包到ClawHub和GitHub
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
 
       - name: Validate skills
         run: python scripts/validate_skills.py
@@ -35,3 +36,11 @@ jobs:
           CLAWHUB_FILE_FIELD: ${{ secrets.CLAWHUB_FILE_FIELD }}
           CLAWHUB_TIMEOUT_SECONDS: ${{ secrets.CLAWHUB_TIMEOUT_SECONDS }}
         run: python scripts/publish_to_clawhub.py
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
