@@ -47,6 +47,7 @@ jobs:
           clawhub publish . --slug media-saber-zspace-monitor --name "Media Saber 极空间监控" --version $VERSION --changelog "扩展功能、定时监控、异常告警、优化 MCP 配置"
 
       - name: Create GitHub Release
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v1
         with:
           name: "Media Saber 极空间监控 ${{ github.ref_name }}"
