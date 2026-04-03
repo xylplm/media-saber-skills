@@ -1,11 +1,6 @@
 ---
-id: media-saber-zspace-monitor
-name: 极空间 NAS 监控助手
+name: media-saber-zspace-monitor
 description: 实时监控极空间NAS系统状态、硬件健康、存储容量和性能指标
-version: 1.0.0
-author: Media-Saber Team
-tags: [zspace, nas, monitor, hardware, storage, performance]
-category: System Management
 ---
 
 # 极空间 NAS 监控助手

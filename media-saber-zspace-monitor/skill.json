@@ -1,112 +1,21 @@
 {
-  "$schema": "https://clawhub.cn/skill.schema.json",
+  "schema_version": "1.0",
   "id": "media-saber-zspace-monitor",
+  "name": "Media Saber 极空间监控",
   "version": "1.0.0",
-  "name": "极空间 NAS 监控助手",
-  "description": "实时监控极空间NAS系统状态、硬件健康、存储容量和性能指标",
-  "author": "Media-Saber Team",
+  "author": "Media Saber",
   "license": "MIT",
-  "keywords": ["zspace", "nas", "monitor", "hardware", "storage", "performance", "system"],
-  "category": "System Management",
-  "tags": ["zspace", "nas", "monitor", "hardware", "storage", "performance"],
-  "homepage": "https://github.com/您的用户名/media-saber-skills",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/您的用户名/media-saber-skills.git"
-  },
+  "description": "实时监控极空间NAS系统状态、硬件健康、存储容量和性能指标",
+  "entry": "SKILL.md",
+  "homepage": "https://wiki.msaber.fun/usage/ai/mcp.html",
+  "tags": [
+    "mcp",
+    "media-saber",
+    "zspace",
+    "nas",
+    "monitor"
+  ],
   "files": [
-    {
-      "name": "SKILL.md",
-      "path": "media-saber-zspace-monitor/SKILL.md",
-      "type": "document",
-      "description": "技能文档和使用指南"
-    }
-  ],
-  "runtime": {
-    "type": "mcp",
-    "mcp": {
-      "endpoint": "http://localhost:22698/message",
-      "tools": ["get_zspace_system_state"],
-      "auth": {
-        "type": "bearer",
-        "header": "Authorization"
-      }
-    }
-  },
-  "capabilities": [
-    "system-monitoring",
-    "hardware-health-check",
-    "storage-analysis",
-    "network-performance",
-    "performance-metrics"
-  ],
-  "constants": {
-    "TEMP_THRESHOLDS": {
-      "cpu_normal": 60,
-      "cpu_warning": 80,
-      "disk_normal": 50,
-      "disk_warning": 55,
-      "gpu_normal": 70,
-      "gpu_warning": 75
-    },
-    "USAGE_THRESHOLDS": {
-      "memory_warning": 80,
-      "memory_critical": 90,
-      "storage_warning": 80,
-      "storage_critical": 90
-    }
-  },
-  "settings": {
-    "checkInterval": 300,
-    "enableAlerts": true,
-    "temperatureUnit": "celsius",
-    "speedUnit": "mbps",
-    "storageUnit": "gb"
-  },
-  "prompts": [
-    "帮我查看NAS当前状态",
-    "NAS的硬盘情况怎么样?",
-    "系统温度高吗?",
-    "硬盘快满了吗?",
-    "网络速度多少?",
-    "CPU和内存使用情况如何?",
-    "NAS的硬件配置是什么?",
-    "有什么硬件故障的迹象吗?",
-    "硬盘SMART状态正常吗?",
-    "可用存储空间还有多少?",
-    "NAS能再用多久?",
-    "存储空间使用趋势是什么?"
-  ],
-  "examples": [
-    {
-      "prompt": "分析我的NAS性能指标",
-      "description": "获取系统状态并分析CPU、内存、磁盘、网络等性能指标"
-    },
-    {
-      "prompt": "检查硬件健康状况",
-      "description": "全面检查温度、风扇、磁盘状态，发现潜在故障"
-    },
-    {
-      "prompt": "规划存储扩容",
-      "description": "分析磁盘容量使用情况，预测满盘时间，给出扩容建议"
-    }
-  ],
-  "relatedSkills": [
-    "media-saber-mcp",
-    "media-saber-site-ops"
-  ],
-  "changelog": [
-    {
-      "version": "1.0.0",
-      "date": "2026-04-03",
-      "changes": [
-        "Initial release with comprehensive NAS monitoring",
-        "Support for real-time system status monitoring",
-        "Multi-disk storage analysis and SMART health check",
-        "Hardware temperature and fan monitoring",
-        "Network performance analysis",
-        "Complete hardware configuration queries"
-      ]
-    }
+    "SKILL.md"
   ]
 }
