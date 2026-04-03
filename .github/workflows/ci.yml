@@ -6,6 +6,8 @@ on:
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,10 +23,14 @@ jobs:
       - name: Build skills
         run: python build_skill.py
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: skill-packages
-          path: dist/*.zip
-          if-no-files-found: error
-          retention-days: 30
+      - name: Create Pre-Release
+        if: |
+          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.auto_release == 'true')
+        run: |
+          DATE=$(date +%Y%m%d)
+          BUILD_TAG="pre-release-$DATE-${{ github.run_number }}"
+          gh release create "$BUILD_TAG" dist/*.zip \
+            --prerelease \
+            --generate-notes \
+            --title "Pre-Release Build ($DATE #${{ github.run_number }})" || true

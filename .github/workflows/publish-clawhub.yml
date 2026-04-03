@@ -36,18 +36,16 @@ jobs:
 
       - name: Publish to ClawHub
         run: |
-          # 从 git tag 提取版本号 (v1.0.0 -> 1.0.0)
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "Publishing version: $VERSION"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "🚀 手动发布到 ClawHub"
+          else
+            VERSION=${GITHUB_REF#refs/tags/v}
+            echo "📦 从标签 v$VERSION 发布"
+          fi
           clawhub sync --all --tags latest
-        env:
-          CLAWHUB_REGISTRY: ${{ secrets.CLAWHUB_REGISTRY }}
-        # 注意: skill.json 中的 id、name、version、author、tags、description 会被自动使用
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: dist/*.zip
           generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
