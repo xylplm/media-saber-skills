@@ -34,6 +34,9 @@ jobs:
       - name: Install ClawHub CLI
         run: npm install -g clawhub
 
+      - name: Setup ClawHub Auth
+        run: clawhub login --token ${{ secrets.CLAWHUB_TOKEN }}
+
       - name: Publish to ClawHub
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
