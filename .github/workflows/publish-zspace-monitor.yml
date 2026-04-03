@@ -2,8 +2,8 @@ name: 发布 Media Saber 极空间监控
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - master
     paths:
       - "media-saber-zspace-monitor/**"
       - ".github/workflows/publish-zspace-monitor.yml"
@@ -37,20 +37,30 @@ jobs:
       - name: Install ClawHub CLI
         run: npm install -g clawhub
 
+      - name: Update version in skill.json
+        run: |
+          VERSION=$(date +3.0.%Y%m%d%H%M)
+          cd media-saber-zspace-monitor
+          jq --arg version "$VERSION" '.version = $version' skill.json > skill.json.tmp && mv skill.json.tmp skill.json
+          cd ..
+
       - name: Login to ClawHub
         run: clawhub login --token ${{ secrets.CLAWHUB_TOKEN }}
 
       - name: Publish media-saber-zspace-monitor to ClawHub
         run: |
+          VERSION=$(date +3.0.%Y%m%d%H%M)
           cd media-saber-zspace-monitor
-          VERSION=$(jq -r '.version' skill.json)
           clawhub publish . --slug media-saber-zspace-monitor --name "Media Saber 极空间监控" --version $VERSION --changelog "扩展功能、定时监控、异常告警、优化 MCP 配置"
 
       - name: Create GitHub Release
-        if: github.ref_type == 'tag'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
-          name: "Media Saber 极空间监控 ${{ github.ref_name }}"
+          tag_name: "media-saber-zspace-monitor-$(date +%Y.%m.%d)"
+          name: "Media Saber 极空间监控 $(date +%Y.%m.%d)"
           files: dist/media-saber-zspace-monitor.zip
-          body: "## Media Saber 极空间监控\n\n**版本**: ${{ github.ref_name }}\n\nNAS 实时监控和异常告警\n\n### 功能\n- 实时系统监控（CPU、内存、硬盘、温度）\n- 定时监控和异常告警\n- 存储容量分析\n- 网络性能测试\n- 硬件健康检测\n- 趋势分析\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          body: "## Media Saber 极空间监控\n\n**版本**: $(date +%Y.%m.%d)\n\nNAS 实时监控和异常告警\n\n### 功能\n- 实时系统监控（CPU、内存、硬盘、温度）\n- 定时监控和异常告警\n- 存储容量分析\n- 网络性能测试\n- 硬件健康检测\n- 趋势分析\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
           generate_release_notes: true

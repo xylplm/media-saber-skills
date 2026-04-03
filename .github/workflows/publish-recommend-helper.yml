@@ -2,8 +2,8 @@ name: 发布 Media Saber 推荐助手
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - master
     paths:
       - "media-saber-recommend-helper/**"
       - ".github/workflows/publish-recommend-helper.yml"
@@ -37,20 +37,30 @@ jobs:
       - name: Install ClawHub CLI
         run: npm install -g clawhub
 
+      - name: Update version in skill.json
+        run: |
+          VERSION=$(date +3.0.%Y%m%d%H%M)
+          cd media-saber-recommend-helper
+          jq --arg version "$VERSION" '.version = $version' skill.json > skill.json.tmp && mv skill.json.tmp skill.json
+          cd ..
+
       - name: Login to ClawHub
         run: clawhub login --token ${{ secrets.CLAWHUB_TOKEN }}
 
       - name: Publish media-saber-recommend-helper to ClawHub
         run: |
+          VERSION=$(date +3.0.%Y%m%d%H%M)
           cd media-saber-recommend-helper
-          VERSION=$(jq -r '.version' skill.json)
           clawhub publish . --slug media-saber-recommend-helper --name "Media Saber 推荐助手" --version $VERSION --changelog "优化 MCP 配置、增强安全性、完善文档"
 
       - name: Create GitHub Release
-        if: github.ref_type == 'tag'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
-          name: "Media Saber 推荐助手 ${{ github.ref_name }}"
+          tag_name: "media-saber-recommend-helper-$(date +%Y.%m.%d)"
+          name: "Media Saber 推荐助手 $(date +%Y.%m.%d)"
           files: dist/media-saber-recommend-helper.zip
-          body: "## Media Saber 推荐助手\n\n**版本**: ${{ github.ref_name }}\n\n结构化电影和电视推荐\n\n### 功能\n- 电影推荐\n- 电视推荐\n- TMDB 信息查询\n- 结构化过滤器\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          body: "## Media Saber 推荐助手\n\n**版本**: $(date +%Y.%m.%d)\n\n结构化电影和电视推荐\n\n### 功能\n- 电影推荐\n- 电视推荐\n- TMDB 信息查询\n- 结构化过滤器\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
           generate_release_notes: true

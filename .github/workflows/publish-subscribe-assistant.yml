@@ -2,8 +2,8 @@ name: 发布 Media Saber 订阅助手
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - master
     paths:
       - "media-saber-subscribe-assistant/**"
       - ".github/workflows/publish-subscribe-assistant.yml"
@@ -37,20 +37,30 @@ jobs:
       - name: Install ClawHub CLI
         run: npm install -g clawhub
 
+      - name: Update version in skill.json
+        run: |
+          VERSION=$(date +3.0.%Y%m%d%H%M)
+          cd media-saber-subscribe-assistant
+          jq --arg version "$VERSION" '.version = $version' skill.json > skill.json.tmp && mv skill.json.tmp skill.json
+          cd ..
+
       - name: Login to ClawHub
         run: clawhub login --token ${{ secrets.CLAWHUB_TOKEN }}
 
       - name: Publish media-saber-subscribe-assistant to ClawHub
         run: |
+          VERSION=$(date +3.0.%Y%m%d%H%M)
           cd media-saber-subscribe-assistant
-          VERSION=$(jq -r '.version' skill.json)
           clawhub publish . --slug media-saber-subscribe-assistant --name "Media Saber 订阅助手" --version $VERSION --changelog "优化 MCP 配置、增强安全性、完善文档"
 
       - name: Create GitHub Release
-        if: github.ref_type == 'tag'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
-          name: "Media Saber 订阅助手 ${{ github.ref_name }}"
+          tag_name: "media-saber-subscribe-assistant-$(date +%Y.%m.%d)"
+          name: "Media Saber 订阅助手 $(date +%Y.%m.%d)"
           files: dist/media-saber-subscribe-assistant.zip
-          body: "## Media Saber 订阅助手\n\n**版本**: ${{ github.ref_name }}\n\n通过 MCP 处理端到端订阅工作流\n\n### 功能\n- TMDB 搜索\n- 电影/电视订阅\n- 订阅刷新\n- 媒体状态查询\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          body: "## Media Saber 订阅助手\n\n**版本**: $(date +%Y.%m.%d)\n\n通过 MCP 处理端到端订阅工作流\n\n### 功能\n- TMDB 搜索\n- 电影/电视订阅\n- 订阅刷新\n- 媒体状态查询\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
           generate_release_notes: true
