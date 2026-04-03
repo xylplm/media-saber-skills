@@ -82,27 +82,103 @@ python .\build_skill.py --skill media-saber-mcp --version 1.0.1
 
 1. 验证技能
 2. 构建包
-3. 将 `dist/` 中的每个 zip 发布到 ClawHub
+3. 使用 ClawHub CLI 发布到 ClawHub（自动检测所有skills并发布）
+4. 在 GitHub 创建 Release 并上传 zip 包
 
-必需的仓库密钥：
+## GitHub 配置（必需）
 
-- `CLAWHUB_UPLOAD_URL`: 上传 API 端点
-- `CLAWHUB_TOKEN`: 发布令牌
+### 第1步：获取 ClawHub API Token
 
-可选的仓库密钥：
+1. 登录 [clawhub.ai](https://clawhub.ai)
+2. 进入账户个人设置 → **API Token** 或 **Settings**
+3. 复制你的 API Token（长字符串）
 
-- `CLAWHUB_TOKEN_HEADER`: 默认 `Authorization`
-- `CLAWHUB_TOKEN_PREFIX`: 默认 `Bearer`
-- `CLAWHUB_FILE_FIELD`: 默认 `file`
-- `CLAWHUB_TIMEOUT_SECONDS`: 默认 `60`
+### 第2步：配置 GitHub Secret
 
-## 手动发布（可选）
+1. 进入仓库 → **Settings** → **Secrets and variables** → **Actions**
+2. 点击 **New repository secret**
+3. 添加以下 Secret：
 
-```powershell
-python .\scripts\publish_to_clawhub.py
+| 密钥名 | 值 | 说明 |
+|------|-----|------|
+| `CLAWHUB_TOKEN` | 从 clawhub.ai 复制的 Token | **必需** - 用于认证发布 |
+| `CLAWHUB_REGISTRY` | https://clawhub.ai/api | 可选 - 如需自定义注册中心 |
+
+### 第3步：配置 skill.json（重要）
+
+每个技能文件夹的 `skill.json` 中必须包含以下字段：
+
+| 字段 | 说明 | 示例 |
+|------|------|------|
+| `id` | Slug - 技能的唯一标识 | `media-saber-mcp` |
+| `name` | Display Name - 显示名称 | `Media Saber MCP` |
+| `version` | 语义化版本号 | `1.0.0` |
+| `author` | 作者/所有者 | `Media Saber` |
+| `description` | 技能描述 | `用于通过 MCP 控制 Media Saber` |
+| `tags` | 标签数组 | `["mcp", "media-saber"]` |
+
+**示例（skill.json）：**
+
+```json
+{
+  "schema_version": "1.0",
+  "id": "media-saber-mcp",
+  "name": "Media Saber MCP",
+  "version": "1.0.0",
+  "author": "Media Saber",
+  "license": "MIT",
+  "description": "用于通过 MCP 控制 Media Saber 的技能",
+  "entry": "SKILL.md",
+  "tags": ["mcp", "media-saber"]
+}
 ```
 
-环境变量与 GitHub Action 密钥相同。
+### 第4步：触发发布
+
+**自动发布（推荐）**
+
+创建并推送版本标签：
+
+```powershell
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+> 标签中的版本号会被识别并用于发布（v1.0.0 会匹配 skill.json 中的 version: "1.0.0"）
+
+**手动发布**
+
+1. 进入仓库 → **Actions**
+2. 选择 **发布技能包到ClawHub和GitHub**
+3. 点击 **Run workflow**
+
+## 手动发布（本地测试）
+
+### 1. 安装 ClawHub CLI
+
+```powershell
+npm install -g clawhub
+```
+
+### 2. 认证
+
+```powershell
+clawhub login --token <your-api-token> --no-browser
+```
+
+### 3. 发布
+
+```powershell
+# 自动扫描并发布所有 skills
+clawhub sync --all
+
+# 或发布单个 skill
+clawhub skill publish ./media-saber-mcp --version 1.0.0 --tags latest
+```
+
+### 4. 查看结果
+
+发布成功后可以在 [clawhub.ai](https://clawhub.ai) 上搜索你的技能
 
 ## OpenClaw 导入
 
