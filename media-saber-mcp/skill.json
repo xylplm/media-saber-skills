@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "id": "media-saber-mcp",
   "name": "Media Saber MCP",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Media Saber",
   "license": "MIT",
   "description": "用于通过 MCP（streamable-http）控制 Media Saber 的 SkillHub 包，已准备好用于 OpenClaw 和兼容客户端。",

@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "id": "media-saber-recommend-helper",
   "name": "Media Saber 推荐助手",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Media Saber",
   "license": "MIT",
   "description": "使用结构化电影/电视过滤器的 Media Saber 推荐导向 MCP 技能。",

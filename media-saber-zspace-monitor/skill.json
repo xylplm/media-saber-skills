@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "id": "media-saber-zspace-monitor",
   "name": "Media Saber 极空间监控",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Media Saber",
   "license": "MIT",
   "description": "实时监控极空间NAS系统状态、硬件健康、存储容量和性能指标。支持定时监控、异常告警、趋势分析和容量规划。",

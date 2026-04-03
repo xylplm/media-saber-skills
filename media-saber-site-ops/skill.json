@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "id": "media-saber-site-ops",
   "name": "Media Saber 站点操作",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Media Saber",
   "license": "MIT",
   "description": "用于签到、同步、诊断和 PT 站点数据检查的站点操作 MCP 技能。",

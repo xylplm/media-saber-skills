@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "id": "media-saber-subscribe-assistant",
   "name": "Media Saber 订阅助手",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Media Saber",
   "license": "MIT",
   "description": "Media Saber 的订阅专用 MCP 技能，针对电影/电视订阅工作流进行了优化。",

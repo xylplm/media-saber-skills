@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "id": "media-saber-cloud-assistant",
   "name": "Media Saber 云助手",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Media Saber",
   "license": "MIT",
   "description": "Media Saber 的云任务 MCP 技能，包括离线下载和云传输。",
