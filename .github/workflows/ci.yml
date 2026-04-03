@@ -1,0 +1,32 @@
+name: Skills CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate skills
+        run: python scripts/validate_skills.py
+
+      - name: Build skills
+        run: python build_skill.py
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-packages
+          path: dist/*.zip
+          if-no-files-found: error

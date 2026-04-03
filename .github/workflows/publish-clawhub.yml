@@ -1,0 +1,37 @@
+name: Publish To ClawHub
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate skills
+        run: python scripts/validate_skills.py
+
+      - name: Build skills
+        run: python build_skill.py
+
+      - name: Publish package(s) to ClawHub
+        env:
+          CLAWHUB_UPLOAD_URL: ${{ secrets.CLAWHUB_UPLOAD_URL }}
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
+          CLAWHUB_TOKEN_HEADER: ${{ secrets.CLAWHUB_TOKEN_HEADER }}
+          CLAWHUB_TOKEN_PREFIX: ${{ secrets.CLAWHUB_TOKEN_PREFIX }}
+          CLAWHUB_FILE_FIELD: ${{ secrets.CLAWHUB_FILE_FIELD }}
+          CLAWHUB_TIMEOUT_SECONDS: ${{ secrets.CLAWHUB_TIMEOUT_SECONDS }}
+        run: python scripts/publish_to_clawhub.py
