@@ -49,6 +49,34 @@
       "purpose": "Store Media Saber MCP endpoint configuration for OpenClaw integration"
     }
   ],
+  "environment_variables": [
+    {
+      "name": "MCP_ENDPOINT_URL",
+      "description": "Media Saber MCP service endpoint URL",
+      "required": true,
+      "example": "http://localhost:22698/message"
+    },
+    {
+      "name": "API_KEY",
+      "description": "API key for Media Saber MCP authentication",
+      "required": true,
+      "sensitive": true,
+      "example": "sk-xxxxxxxxxxxxx"
+    }
+  ],
+  "permissions": [
+    {
+      "type": "config-file",
+      "path": "~/.claw/mcpServers.json",
+      "access": ["read", "write"],
+      "reason": "Read and write Media Saber MCP configuration"
+    },
+    {
+      "type": "network",
+      "description": "Connect to Media Saber MCP endpoint",
+      "reason": "Access all 28+ MCP tools and complete Media Saber functionality"
+    }
+  ],
   "files": [
     "SKILL.md",
     "docs/tool-reference.md",
