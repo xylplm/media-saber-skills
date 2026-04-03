@@ -22,9 +22,7 @@ jobs:
         id: version
         run: |
           VERSION=$(date +3.0.%Y%m%d%H%M)
-          TAG=$(date +%Y.%m.%d)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -65,8 +63,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: "media-saber-site-ops-${{ steps.version.outputs.tag }}"
-          name: "Media Saber 站点操作 ${{ steps.version.outputs.tag }}"
+          tag_name: "media-saber-site-ops-${{ steps.version.outputs.version }}"
+          name: "Media Saber 站点操作 ${{ steps.version.outputs.version }}"
           files: dist/media-saber-site-ops.zip
-          body: "## Media Saber 站点操作\n\n**版本**: ${{ steps.release_meta.outputs.version }}\n\nPT 站点管理和诊断\n\n### 功能\n- 签到管理\n- 同步配置\n- RSS 测试\n- 站点诊断\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          body: "## Media Saber 站点操作\n\n**版本**: ${{ steps.version.outputs.version }}\n\nPT 站点管理和诊断\n\n### 功能\n- 签到管理\n- 同步配置\n- RSS 测试\n- 站点诊断\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
           generate_release_notes: true

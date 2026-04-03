@@ -22,9 +22,7 @@ jobs:
         id: version
         run: |
           VERSION=$(date +3.0.%Y%m%d%H%M)
-          TAG=$(date +%Y.%m.%d)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -65,8 +63,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: "media-saber-cloud-assistant-${{ steps.version.outputs.tag }}"
-          name: "Media Saber 云助手 ${{ steps.version.outputs.tag }}"
+          tag_name: "media-saber-cloud-assistant-${{ steps.version.outputs.version }}"
+          name: "Media Saber 云助手 ${{ steps.version.outputs.version }}"
           files: dist/media-saber-cloud-assistant.zip
-          body: "## Media Saber 云助手\n\n**版本**: ${{ steps.version.outputs.tag }}\n\n云存储和离线下载任务管理\n\n### 功能\n- 磁力/ed2k 离线下载\n- 115 云盘资源接收\n- 网络测试\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          body: "## Media Saber 云助手\n\n**版本**: ${{ steps.version.outputs.version }}\n\n云存储和离线下载任务管理\n\n### 功能\n- 磁力/ed2k 离线下载\n- 115 云盘资源接收\n- 网络测试\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
           generate_release_notes: true

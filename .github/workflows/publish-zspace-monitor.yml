@@ -22,9 +22,7 @@ jobs:
         id: version
         run: |
           VERSION=$(date +3.0.%Y%m%d%H%M)
-          TAG=$(date +%Y.%m.%d)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -65,8 +63,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: "media-saber-zspace-monitor-${{ steps.version.outputs.tag }}"
-          name: "Media Saber 极空间监控 ${{ steps.version.outputs.tag }}"
+          tag_name: "media-saber-zspace-monitor-${{ steps.version.outputs.version }}"
+          name: "Media Saber 极空间监控 ${{ steps.version.outputs.version }}"
           files: dist/media-saber-zspace-monitor.zip
-          body: "## Media Saber 极空间监控\n\n**版本**: ${{ steps.version.outputs.tag }}\n\n实时 NAS 监控和异常告警\n\n### 功能\n- 实时监控（CPU、内存、温度、硬盘、网络）\n- 定时监控（5分钟、30分钟、每日）\n- 多级告警（绿色/黄色/橙色/红色）\n- 异常检测和趋势分析\n\n### 安装\n 需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          body: "## Media Saber 极空间监控\n\n**版本**: ${{ steps.version.outputs.version }}\n\n实时 NAS 监控和异常告警\n\n### 功能\n- 实时监控（CPU、内存、温度、硬盘、网络）\n- 定时监控（5分钟、30分钟、每日）\n- 多级告警（绿色/黄色/橙色/红色）\n- 异常检测和趋势分析\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
           generate_release_notes: true
