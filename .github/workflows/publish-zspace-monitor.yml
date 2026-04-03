@@ -1,0 +1,54 @@
+name: 发布 Media Saber 极空间监控
+
+on:
+  push:
+    tags:
+      - "v*"
+    paths:
+      - "media-saber-zspace-monitor/**"
+      - ".github/workflows/publish-zspace-monitor.yml"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Validate skills
+        run: python scripts/validate_skills.py
+
+      - name: Build skills
+        run: python build_skill.py
+
+      - name: Install ClawHub CLI
+        run: npm install -g clawhub
+
+      - name: Login to ClawHub
+        run: clawhub login --token ${{ secrets.CLAWHUB_TOKEN }}
+
+      - name: Publish media-saber-zspace-monitor to ClawHub
+        run: |
+          cd media-saber-zspace-monitor
+          clawhub publish . --slug media-saber-zspace-monitor
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Media Saber 极空间监控 ${{ github.ref_name }}"
+          files: dist/media-saber-zspace-monitor.zip
+          body: "## Media Saber 极空间监控\n\n**版本**: ${{ github.ref_name }}\n\nNAS 实时监控和异常告警\n\n### 功能\n- 实时系统监控（CPU、内存、硬盘、温度）\n- 定时监控和异常告警\n- 存储容量分析\n- 网络性能测试\n- 硬件健康检测\n- 趋势分析\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          generate_release_notes: true

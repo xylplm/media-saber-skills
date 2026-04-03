@@ -1,0 +1,54 @@
+name: 发布 Media Saber 推荐助手
+
+on:
+  push:
+    tags:
+      - "v*"
+    paths:
+      - "media-saber-recommend-helper/**"
+      - ".github/workflows/publish-recommend-helper.yml"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Validate skills
+        run: python scripts/validate_skills.py
+
+      - name: Build skills
+        run: python build_skill.py
+
+      - name: Install ClawHub CLI
+        run: npm install -g clawhub
+
+      - name: Login to ClawHub
+        run: clawhub login --token ${{ secrets.CLAWHUB_TOKEN }}
+
+      - name: Publish media-saber-recommend-helper to ClawHub
+        run: |
+          cd media-saber-recommend-helper
+          clawhub publish . --slug media-saber-recommend-helper
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Media Saber 推荐助手 ${{ github.ref_name }}"
+          files: dist/media-saber-recommend-helper.zip
+          body: "## Media Saber 推荐助手\n\n**版本**: ${{ github.ref_name }}\n\n结构化电影和电视推荐\n\n### 功能\n- 电影推荐\n- 电视推荐\n- TMDB 信息查询\n- 结构化过滤器\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          generate_release_notes: true

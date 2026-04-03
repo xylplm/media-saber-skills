@@ -1,0 +1,54 @@
+name: 发布 Media Saber 订阅助手
+
+on:
+  push:
+    tags:
+      - "v*"
+    paths:
+      - "media-saber-subscribe-assistant/**"
+      - ".github/workflows/publish-subscribe-assistant.yml"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Validate skills
+        run: python scripts/validate_skills.py
+
+      - name: Build skills
+        run: python build_skill.py
+
+      - name: Install ClawHub CLI
+        run: npm install -g clawhub
+
+      - name: Login to ClawHub
+        run: clawhub login --token ${{ secrets.CLAWHUB_TOKEN }}
+
+      - name: Publish media-saber-subscribe-assistant to ClawHub
+        run: |
+          cd media-saber-subscribe-assistant
+          clawhub publish . --slug media-saber-subscribe-assistant
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Media Saber 订阅助手 ${{ github.ref_name }}"
+          files: dist/media-saber-subscribe-assistant.zip
+          body: "## Media Saber 订阅助手\n\n**版本**: ${{ github.ref_name }}\n\n通过 MCP 处理端到端订阅工作流\n\n### 功能\n- TMDB 搜索\n- 电影/电视订阅\n- 订阅刷新\n- 媒体状态查询\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          generate_release_notes: true

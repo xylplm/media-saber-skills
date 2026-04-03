@@ -1,0 +1,54 @@
+name: 发布 Media Saber MCP
+
+on:
+  push:
+    tags:
+      - "v*"
+    paths:
+      - "media-saber-mcp/**"
+      - ".github/workflows/publish-mcp.yml"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Validate skills
+        run: python scripts/validate_skills.py
+
+      - name: Build skills
+        run: python build_skill.py
+
+      - name: Install ClawHub CLI
+        run: npm install -g clawhub
+
+      - name: Login to ClawHub
+        run: clawhub login --token ${{ secrets.CLAWHUB_TOKEN }}
+
+      - name: Publish media-saber-mcp to ClawHub
+        run: |
+          cd media-saber-mcp
+          clawhub publish . --slug media-saber-mcp
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Media Saber MCP ${{ github.ref_name }}"
+          files: dist/media-saber-mcp.zip
+          body: "## Media Saber MCP\n\n**版本**: ${{ github.ref_name }}\n\n完整 MCP 工具集（28+ 工具）\n\n### 功能\n- TMDB 搜索和媒体查询\n- 订阅管理\n- 站点操作\n- 推荐助手\n- 云任务管理\n- 系统检查\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          generate_release_notes: true
