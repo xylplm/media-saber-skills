@@ -42,8 +42,9 @@ jobs:
 
       - name: Publish media-saber-cloud-assistant to ClawHub
         run: |
+          VERSION=${GITHUB_REF_NAME#v}
           cd media-saber-cloud-assistant
-          clawhub publish . --slug media-saber-cloud-assistant
+          clawhub publish . --slug media-saber-cloud-assistant --version $VERSION
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

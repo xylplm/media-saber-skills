@@ -42,8 +42,9 @@ jobs:
 
       - name: Publish media-saber-mcp to ClawHub
         run: |
+          VERSION=${GITHUB_REF_NAME#v}
           cd media-saber-mcp
-          clawhub publish . --slug media-saber-mcp
+          clawhub publish . --slug media-saber-mcp --version $VERSION
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
