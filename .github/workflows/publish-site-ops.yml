@@ -42,9 +42,9 @@ jobs:
 
       - name: Publish media-saber-site-ops to ClawHub
         run: |
-          VERSION=${GITHUB_REF_NAME#v}
           cd media-saber-site-ops
-          clawhub publish . --slug media-saber-site-ops --version $VERSION
+          VERSION=$(jq -r '.version' skill.json)
+          clawhub publish . --slug media-saber-site-ops --name "Media Saber 站点操作" --version $VERSION --changelog "优化 MCP 配置、增强安全性、完善文档"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
