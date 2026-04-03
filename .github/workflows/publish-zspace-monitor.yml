@@ -1,4 +1,4 @@
-name: 发布 Media Saber 极空间监控
+﻿name: 发布 Media Saber 极空间监控
 
 on:
   push:
@@ -17,6 +17,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Generate version
+        id: version
+        run: |
+          VERSION=$(date +3.0.%Y%m%d%H%M)
+          TAG=$(date +%Y.%m.%d)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -39,9 +47,8 @@ jobs:
 
       - name: Update version in skill.json
         run: |
-          VERSION=$(date +3.0.%Y%m%d%H%M)
           cd media-saber-zspace-monitor
-          jq --arg version "$VERSION" '.version = $version' skill.json > skill.json.tmp && mv skill.json.tmp skill.json
+          jq --arg version "${{ steps.version.outputs.version }}" '.version = $version' skill.json > skill.json.tmp && mv skill.json.tmp skill.json
           cd ..
 
       - name: Login to ClawHub
@@ -49,9 +56,8 @@ jobs:
 
       - name: Publish media-saber-zspace-monitor to ClawHub
         run: |
-          VERSION=$(date +3.0.%Y%m%d%H%M)
           cd media-saber-zspace-monitor
-          clawhub publish . --slug media-saber-zspace-monitor --name "Media Saber 极空间监控" --version $VERSION --changelog "扩展功能、定时监控、异常告警、优化 MCP 配置"
+          clawhub publish . --slug media-saber-zspace-monitor --name "Media Saber 极空间监控" --version ${{ steps.version.outputs.version }} --changelog "扩展功能、定时监控、异常告警、优化 MCP 配置"
 
       - name: Create GitHub Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -59,8 +65,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: "media-saber-zspace-monitor-$(date +%Y.%m.%d)"
-          name: "Media Saber 极空间监控 $(date +%Y.%m.%d)"
+          tag_name: "media-saber-zspace-monitor-${{ steps.version.outputs.tag }}"
+          name: "Media Saber 极空间监控 ${{ steps.version.outputs.tag }}"
           files: dist/media-saber-zspace-monitor.zip
-          body: "## Media Saber 极空间监控\n\n**版本**: $(date +%Y.%m.%d)\n\nNAS 实时监控和异常告警\n\n### 功能\n- 实时系统监控（CPU、内存、硬盘、温度）\n- 定时监控和异常告警\n- 存储容量分析\n- 网络性能测试\n- 硬件健康检测\n- 趋势分析\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          body: "## Media Saber 极空间监控\n\n**版本**: ${{ steps.version.outputs.tag }}\n\n实时 NAS 监控和异常告警\n\n### 功能\n- 实时监控（CPU、内存、温度、硬盘、网络）\n- 定时监控（5分钟、30分钟、每日）\n- 多级告警（绿色/黄色/橙色/红色）\n- 异常检测和趋势分析\n\n### 安装\n 需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
           generate_release_notes: true

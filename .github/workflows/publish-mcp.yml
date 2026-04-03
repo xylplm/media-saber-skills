@@ -18,6 +18,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Generate version
+        id: version
+        run: |
+          VERSION=$(date +3.0.%Y%m%d%H%M)
+          TAG=$(date +%Y.%m.%d)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -39,9 +47,8 @@ jobs:
 
       - name: Update version in skill.json
         run: |
-          VERSION=$(date +3.0.%Y%m%d%H%M)
           cd media-saber-mcp
-          jq --arg version "$VERSION" '.version = $version' skill.json > skill.json.tmp && mv skill.json.tmp skill.json
+          jq --arg version "${{ steps.version.outputs.version }}" '.version = $version' skill.json > skill.json.tmp && mv skill.json.tmp skill.json
           cd ..
 
       - name: Login to ClawHub
@@ -49,9 +56,8 @@ jobs:
 
       - name: Publish media-saber-mcp to ClawHub
         run: |
-          VERSION=$(date +3.0.%Y%m%d%H%M)
           cd media-saber-mcp
-          clawhub publish . --slug media-saber-mcp --name "Media Saber MCP" --version $VERSION --changelog "优化 MCP 配置、增强安全性、完善文档"
+          clawhub publish . --slug media-saber-mcp --name "Media Saber MCP" --version ${{ steps.version.outputs.version }} --changelog "优化 MCP 配置、增强安全性、完善文档"
 
       - name: Create GitHub Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -59,8 +65,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: "media-saber-mcp-$(date +%Y.%m.%d)"
-          name: "Media Saber MCP $(date +%Y.%m.%d)"
+          tag_name: "media-saber-mcp-${{ steps.version.outputs.tag }}"
+          name: "Media Saber MCP ${{ steps.version.outputs.tag }}"
           files: dist/media-saber-mcp.zip
-          body: "## Media Saber MCP\n\n**版本**: $(date +%Y.%m.%d)\n\n完整 MCP 工具集（28+ 工具）\n\n### 功能\n- TMDB 搜索和媒体查询\n- 订阅管理\n- 站点操作\n- 推荐助手\n- 云任务管理\n- 系统检查\n\n### 安装\n需要配置 Media Saber MCP 服务连接。详见 SKILL.md"
+          body: "## Media Saber MCP\n\n**版本**: ${{ steps.version.outputs.tag }}\n\n完整的 MCP 工具包\n\n### 功能\n- 28+ 工具函数\n- 完整的媒体 Saber 功能\n- 实时监控和管理\n\n### 安装\n核心 MCP 服务的基础能力。详见 SKILL.md"
           generate_release_notes: true
