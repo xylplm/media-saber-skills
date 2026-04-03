@@ -19,7 +19,7 @@
   "runtime": {
     "protocol": "mcp",
     "transport": "streamable-http",
-    "default_url": "http://localhost:22698/message",
+    "default_url": "<MCP_ENDPOINT_URL>",
     "auth": {
       "type": "header",
       "header": "Authorization",

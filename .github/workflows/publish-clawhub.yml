@@ -5,6 +5,19 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      skill:
+        description: '选择要发布的技能（留空发布全部）'
+        required: false
+        type: choice
+        options:
+          - '全部'
+          - 'media-saber-cloud-assistant'
+          - 'media-saber-mcp'
+          - 'media-saber-recommend-helper'
+          - 'media-saber-site-ops'
+          - 'media-saber-subscribe-assistant'
+          - 'media-saber-zspace-monitor'
 
 jobs:
   publish:
@@ -40,12 +53,19 @@ jobs:
       - name: Publish to ClawHub
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "🚀 手动发布到 ClawHub"
+            SKILL_CHOICE="${{ github.event.inputs.skill }}"
+            if [[ "$SKILL_CHOICE" == "全部" || -z "$SKILL_CHOICE" ]]; then
+              echo "🚀 手动发布全部技能到 ClawHub"
+              clawhub sync --all --tags latest
+            else
+              echo "🚀 手动发布 $SKILL_CHOICE 到 ClawHub"
+              clawhub skill publish "./$SKILL_CHOICE" --tags latest
+            fi
           else
             VERSION=${GITHUB_REF#refs/tags/v}
-            echo "📦 从标签 v$VERSION 发布"
+            echo "📦 从标签 v$VERSION 发布全部技能"
+            clawhub sync --all --tags latest
           fi
-          clawhub sync --all --tags latest
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

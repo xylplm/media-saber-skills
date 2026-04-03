@@ -2,18 +2,39 @@
   "schema_version": "1.0",
   "id": "media-saber-zspace-monitor",
   "name": "Media Saber 极空间监控",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Media Saber",
   "license": "MIT",
-  "description": "实时监控极空间NAS系统状态、硬件健康、存储容量和性能指标",
+  "description": "实时监控极空间NAS系统状态、硬件健康、存储容量和性能指标。支持定时监控、异常告警、趋势分析和容量规划。",
   "entry": "SKILL.md",
   "homepage": "https://wiki.msaber.fun/usage/ai/mcp.html",
+  "capabilities": [
+    "real-time-monitoring",
+    "scheduled-monitoring",
+    "alerting",
+    "trend-analysis",
+    "capacity-planning",
+    "anomaly-detection"
+  ],
+  "runtime": {
+    "protocol": "mcp",
+    "transport": "streamable-http",
+    "default_url": "<MCP_ENDPOINT_URL>",
+    "auth": {
+      "type": "header",
+      "header": "Authorization",
+      "format": "Bearer <API_KEY>"
+    }
+  },
   "tags": [
     "mcp",
     "media-saber",
     "zspace",
     "nas",
-    "monitor"
+    "monitor",
+    "alert",
+    "health",
+    "scheduled"
   ],
   "files": [
     "SKILL.md"

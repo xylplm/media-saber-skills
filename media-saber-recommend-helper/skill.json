@@ -8,6 +8,16 @@
   "description": "使用结构化电影/电视过滤器的 Media Saber 推荐导向 MCP 技能。",
   "entry": "SKILL.md",
   "homepage": "https://wiki.msaber.fun/usage/ai/mcp.html",
+  "runtime": {
+    "protocol": "mcp",
+    "transport": "streamable-http",
+    "default_url": "<MCP_ENDPOINT_URL>",
+    "auth": {
+      "type": "header",
+      "header": "Authorization",
+      "format": "Bearer <API_KEY>"
+    }
+  },
   "tags": [
     "mcp",
     "media-saber",

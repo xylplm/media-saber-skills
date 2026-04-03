@@ -8,6 +8,16 @@
   "description": "Media Saber 的订阅专用 MCP 技能，针对电影/电视订阅工作流进行了优化。",
   "entry": "SKILL.md",
   "homepage": "https://wiki.msaber.fun/usage/ai/mcp.html",
+  "runtime": {
+    "protocol": "mcp",
+    "transport": "streamable-http",
+    "default_url": "<MCP_ENDPOINT_URL>",
+    "auth": {
+      "type": "header",
+      "header": "Authorization",
+      "format": "Bearer <API_KEY>"
+    }
+  },
   "tags": [
     "mcp",
     "media-saber",

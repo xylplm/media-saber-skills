@@ -8,6 +8,16 @@
   "description": "Media Saber 的云任务 MCP 技能，包括离线下载和云传输。",
   "entry": "SKILL.md",
   "homepage": "https://wiki.msaber.fun/usage/ai/mcp.html",
+  "runtime": {
+    "protocol": "mcp",
+    "transport": "streamable-http",
+    "default_url": "<MCP_ENDPOINT_URL>",
+    "auth": {
+      "type": "header",
+      "header": "Authorization",
+      "format": "Bearer <API_KEY>"
+    }
+  },
   "tags": [
     "mcp",
     "media-saber",
