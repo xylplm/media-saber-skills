@@ -7,6 +7,32 @@ description: 在 Media Saber MCP 中运行云存储和下载任务，包括 115 
 
 为云任务操作使用此技能。
 
+## 🔐 安全性和权限声明
+
+本技能需要以下权限和凭证，确保完全透明：
+
+### 所需凭证
+- **MCP_ENDPOINT_URL**: Media Saber MCP 服务的实际地址
+  - 示例：`http://localhost:22698/message`
+  - 敏感性：**低**（地址通常是内部网络或已知地址）
+  - 用途：连接到 Media Saber MCP 服务
+
+- **API_KEY**: 用于验证与 Media Saber MCP 服务的连接
+  - 存储位置：OpenClaw 环境变量或配置文件
+  - 敏感性：**高**（不会在日志中显示）
+  - 用途：所有文件操作和离线下载
+
+### 所需网络/文件访问
+- **配置文件修改**：`~/.claw/mcpServers.json`
+  - 用途：存储 Media Saber MCP 端点配置
+  - 访问类型：读和写
+  - 操作：OpenClaw 安装时自动配置（需用户确认）
+
+### 数据隐私
+- 所有文件操作在 Media Saber 系统内执行
+- API Key 从不发送至第三方
+- 下载记录存储在本地
+
 ## ⚠️ 必须配置：MCP 服务连接
 
 在使用此技能前，**您必须配置以下信息**：

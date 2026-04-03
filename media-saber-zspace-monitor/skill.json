@@ -26,6 +26,29 @@
       "format": "Bearer <API_KEY>"
     }
   },
+  "credentials": [
+    {
+      "id": "MCP_ENDPOINT_URL",
+      "name": "Media Saber MCP Endpoint URL",
+      "description": "The endpoint URL for Media Saber MCP service (e.g., http://localhost:22698/message)",
+      "required": true,
+      "sensitive": false
+    },
+    {
+      "id": "API_KEY",
+      "name": "Media Saber MCP API Key",
+      "description": "API key for authenticating with Media Saber MCP endpoint",
+      "required": true,
+      "sensitive": true
+    }
+  ],
+  "config_paths": [
+    {
+      "path": "~/.claw/mcpServers.json",
+      "access": "read-write",
+      "purpose": "Store Media Saber MCP endpoint configuration for OpenClaw integration"
+    }
+  ],
   "tags": [
     "mcp",
     "media-saber",
